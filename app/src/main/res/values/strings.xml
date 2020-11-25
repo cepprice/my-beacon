@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Beacon</string>
+
+    <string name="main_alert_title">App not working</string>
+    <string name="main_alert_message">Since location access has not been granted, this app will not be able to discover beacons.  Please go to Settings -> Applications -> Permissions and grant location access to this app.</string>
+    <string name="main_not_functional">App is not functional</string>
+    <string name="main_label_ble">BLE Devices</string>
+    <string name="main_label_beacons">Beacons</string>
+
+
+</resources>
