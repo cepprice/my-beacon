@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="device"
+            type="ru.cepprice.mybeacon.data.DeviceView" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        android:layout_marginLeft="@dimen/spacing_normal_16"
+        android:layout_marginRight="@dimen/spacing_normal_16"
+        android:layout_marginBottom="@dimen/spacing_small_8">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal_16">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{device.name}"
+                android:textStyle="bold"
+                android:textSize="@dimen/font_big_20"
+                tools:text="LE_Bluetooth Device" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey"
+                android:layout_marginTop="@dimen/spacing_small_8"
+                android:layout_marginBottom="@dimen/spacing_small_8"
+                android:layout_below="@id/tv_name" />
+
+            <TextView
+                android:id="@+id/tv_label_mac"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAC"
+                android:textStyle="bold"
+                android:textSize="@dimen/font_normal_16"
+                android:layout_below="@id/divider" />
+
+            <TextView
+                android:id="@+id/tv_mac"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{device.mac}"
+                android:textSize="@dimen/font_normal_16"
+                android:layout_below="@id/tv_label_mac"
+                tools:text="C0:EE:FB:F8:27:89"/>
+
+            <TextView
+                android:id="@+id/tv_label_rssi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RSSI"
+                android:textSize="@dimen/font_normal_16"
+                android:textStyle="bold"
+                android:layout_below="@id/divider"
+                android:layout_toRightOf="@id/tv_mac"
+                android:layout_marginLeft="@dimen/spacing_huge_32" />
+
+            <TextView
+                android:id="@+id/tv_rssi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{device.rssi}"
+                android:textSize="@dimen/font_normal_16"
+                android:layout_below="@id/tv_label_rssi"
+                android:layout_alignLeft="@id/tv_label_rssi"
+                tools:text="-10 dBm"/>
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
