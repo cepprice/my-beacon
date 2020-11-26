@@ -1,4 +1,4 @@
-package ru.cepprice.mybeacon.ui.fragment.adapter
+package ru.cepprice.mybeacon.ui.fragment.main
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

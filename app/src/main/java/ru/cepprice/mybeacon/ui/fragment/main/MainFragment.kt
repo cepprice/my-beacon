@@ -1,4 +1,4 @@
-package ru.cepprice.mybeacon.ui.fragment
+package ru.cepprice.mybeacon.ui.fragment.main
 
 import android.Manifest
 import android.app.Activity
@@ -17,16 +17,17 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import ru.cepprice.mybeacon.R
 import ru.cepprice.mybeacon.databinding.FragmentMainBinding
-import ru.cepprice.mybeacon.ui.fragment.adapter.ViewPagerAdapter
+import ru.cepprice.mybeacon.ui.fragment.beacons.BeaconListFragment
+import ru.cepprice.mybeacon.ui.fragment.devices.DeviceListFragment
 import ru.cepprice.mybeacon.utils.autoCleared
-
-private const val REQUEST_ENABLE_BT = 1
 
 class MainFragment : Fragment() {
 
     private var binding: FragmentMainBinding by autoCleared()
 
     private lateinit var bluetoothAdapter: BluetoothAdapter
+
+    private val REQUEST_ENABLE_BT = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)

@@ -1,23 +1,23 @@
-package ru.cepprice.mybeacon.ui.fragment
+package ru.cepprice.mybeacon.ui.fragment.beacons
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import ru.cepprice.mybeacon.databinding.FragmentDeviceListBinding
+import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
 import ru.cepprice.mybeacon.utils.autoCleared
 
-class DeviceListFragment : Fragment() {
+class BeaconListFragment : Fragment() {
 
-    private var binding: FragmentDeviceListBinding by autoCleared()
+    private var binding: FragmentBeaconListBinding by autoCleared()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDeviceListBinding.inflate(inflater, container, false)
+        binding = FragmentBeaconListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -25,5 +25,4 @@ class DeviceListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
     }
-
 }

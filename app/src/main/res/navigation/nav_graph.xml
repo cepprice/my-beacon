@@ -6,6 +6,6 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="ru.cepprice.mybeacon.ui.fragment.MainFragment"
+        android:name="ru.cepprice.mybeacon.ui.fragment.main.MainFragment"
         android:label="MainFragment" />
 </navigation>
