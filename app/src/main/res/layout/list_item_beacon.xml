@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="beacon"
+            type="ru.cepprice.mybeacon.data.BeaconView" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        android:layout_marginLeft="@dimen/spacing_normal_16"
+        android:layout_marginRight="@dimen/spacing_normal_16"
+        android:layout_marginBottom="@dimen/spacing_small_8">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal_16">
+
+            <TextView
+                android:id="@+id/tv_label_uuid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UUID"
+                android:textSize="@dimen/font_normal_16"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_value_uuid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{beacon.uuid}"
+                android:textSize="@dimen/font_normal_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_label_uuid"
+                tools:text="12345678-1234-1234-1234-123456781234" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/spacing_small_8"
+                android:background="@color/grey"
+                app:layout_constraintTop_toBottomOf="@+id/tv_value_uuid" />
+
+            <TextView
+                android:id="@+id/tv_label_major"
+                style="@style/TextViewLabel"
+                android:layout_marginTop="@dimen/spacing_small_8"
+                android:text="Major"
+                app:layout_constraintEnd_toStartOf="@+id/tv_label_minor"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+            <TextView
+                android:id="@+id/tv_label_minor"
+                style="@style/TextViewLabel"
+                android:text="Minor"
+                app:layout_constraintEnd_toStartOf="@+id/tv_label_rssi"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_label_major"
+                app:layout_constraintTop_toTopOf="@id/tv_label_major" />
+
+            <TextView
+                android:id="@+id/tv_value_minor"
+                style="@style/TextViewValue"
+                android:text="@{beacon.minor}"
+                app:layout_constraintStart_toStartOf="@+id/tv_label_minor"
+                app:layout_constraintTop_toBottomOf="@id/tv_label_minor"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/tv_label_rssi"
+                style="@style/TextViewLabel"
+                android:text="RSSI"
+                app:layout_constraintEnd_toStartOf="@+id/tv_label_dist"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_label_minor"
+                app:layout_constraintTop_toTopOf="@id/tv_label_minor" />
+
+            <TextView
+                android:id="@+id/tv_value_major"
+                style="@style/TextViewValue"
+                android:text="@{}"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@+id/tv_label_major"
+                app:layout_constraintTop_toBottomOf="@id/tv_label_major"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/tv_value_rssi"
+                style="@style/TextViewValue"
+                android:text="@{beacon.rssi}"
+                app:layout_constraintStart_toStartOf="@+id/tv_label_rssi"
+                app:layout_constraintTop_toBottomOf="@id/tv_label_rssi"
+                tools:text="-40 dBm" />
+
+            <TextView
+                android:id="@+id/tv_label_dist"
+                style="@style/TextViewLabel"
+                android:text="Distance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_label_rssi"
+                app:layout_constraintTop_toTopOf="@id/tv_label_rssi" />
+
+            <TextView
+                android:id="@+id/tv_value_dist"
+                style="@style/TextViewValue"
+                android:text="@{beacon.distance}"
+                app:layout_constraintStart_toStartOf="@+id/tv_label_dist"
+                app:layout_constraintTop_toBottomOf="@+id/tv_label_dist"
+                tools:text="20 m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
