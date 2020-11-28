@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-class TimedBeaconSimulator(beaconCount: Int? = null) : BeaconSimulator {
+class TimedBeaconSimulator(beaconCount: Int? = null, maxPeriod: Int = 3) : BeaconSimulator {
 
     private val beacons = ArrayList<Beacon>()
     private var scheduledTaskExecutor: ScheduledExecutorService
@@ -24,17 +24,16 @@ class TimedBeaconSimulator(beaconCount: Int? = null) : BeaconSimulator {
             if (counter++ < mBeaconCount) beacons.add(getRandomBeacon()
                 .also { Log.d("M_TimedBeaconSimulator", "Randomly created beacon with dist: ${it.distance}") })
             else scheduledTaskExecutor.shutdown()
-        }, 0, 1, TimeUnit.SECONDS)
+        }, 0, (2..maxPeriod).random().toLong(), TimeUnit.SECONDS)
     }
 
     private fun getRandomBeacon(): Beacon =
         AltBeacon.Builder()
-            .setId1("DF7E1C79-43E9-44FF-886F-1D1F7DA699${(10..99).random()}")
+            .setId1(Utils.generateRandomUuid())
             .setId2("1")
             .setId3("1")
             .setRssi((-100..-26).random())
-            .setTxPower((-115..-80).random())
-//            .setBluetoothAddress()
+            .setTxPower((-80..-69).random())
             .build()
 
     override fun getBeacons(): MutableList<Beacon> = beacons
