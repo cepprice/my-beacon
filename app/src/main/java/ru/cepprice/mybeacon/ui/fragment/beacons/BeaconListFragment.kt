@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.altbeacon.beacon.*
 import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
 import ru.cepprice.mybeacon.utils.TimedBeaconSimulator
 import ru.cepprice.mybeacon.utils.Utils
 import ru.cepprice.mybeacon.utils.autoCleared
+import ru.cepprice.mybeacon.utils.extension.toBeaconView
 
 class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
@@ -25,10 +27,14 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
     private var binding: FragmentBeaconListBinding by autoCleared()
 
+    private lateinit var adapter: BeaconListAdapter
+
     private lateinit var beaconManager: BeaconManager
 
     private var prevBeacons: MutableCollection<Beacon> = mutableListOf()
     private var beaconsForAdapter = ArrayList<Beacon>()
+
+    private var isFirstCall = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +47,13 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = BeaconListAdapter{
+            TODO()
+        }
+
+        binding.rvBeacons.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvBeacons.adapter = adapter
 
         BeaconManager.setBeaconSimulator(TimedBeaconSimulator())
         beaconManager = BeaconManager.getInstanceForApplication(requireContext())
@@ -66,7 +79,6 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
             override fun didExitRegion(p0: Region?) {
                 Log.d("M_BeaconListFragment", "Exited: ${p0?.id1}")
-                // TODO Remove item from adapter
             }
 
             override fun didDetermineStateForRegion(p0: Int, p1: Region?) {
@@ -87,16 +99,31 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
         Log.d("M_BeaconListFragment",
             "Beacons: ${beacons.map { beacons.indexOf(it).toString().plus(": ${it.distance}") }}")
 
+        // In case there 2 or more beacons detected simultaneously
+        // after start of scanning
+        if (isFirstCall) {
+            beaconsForAdapter = Utils.quickSortBeacons(beaconsForAdapter)
+            isFirstCall = false
+        }
+
+        // If some previously detected beacons disappeared, identify them and remove
+        // from list of beacons
+        val lostBeacons = Utils.getLostBeacons(prevBeacons, beacons)
+        if (lostBeacons.isNotEmpty()) {
+            beaconsForAdapter.removeAll(lostBeacons)
+        }
+
+        // If new beacons were detected after first scan, get them and add
+        // to existing list of beacons with saving order by distance
         val newBeacons = Utils.getNewBeacons(prevBeacons, beacons)
         if (newBeacons.isNotEmpty()) {
-            beaconsForAdapter = Utils.addSavingOrder(beaconsForAdapter, newBeacons)
+            beaconsForAdapter = Utils.addBeaconSavingOrder(beaconsForAdapter, newBeacons)
         }
-        Log.d("M_BeaconListFragment", "\nSorted:")
-        beaconsForAdapter.forEach{
-            Log.d("M_BeaconListFragment", "%.2f".format(it.distance))
-        }
-        Log.d("M_BeaconListFragment", "\n")
 
+        adapter.updateBeacons(beaconsForAdapter.map { it.toBeaconView() })
+
+        // Add all beacons, found in last call, to compare them with beacons,
+        // that will be found next call
         prevBeacons.clear()
         prevBeacons.addAll(beacons)
     }
