@@ -12,6 +12,12 @@ class BeaconListAdapter(
 
     private val beacons = ArrayList<BeaconView>()
 
+    fun updateBeacons(beacons: List<BeaconView>) {
+        this.beacons.clear()
+        this.beacons.addAll(beacons)
+        notifyDataSetChanged()
+    }
+
     class BeaconViewHolder(val binding: ListItemBeaconBinding)
         : RecyclerView.ViewHolder(binding.root)
 
