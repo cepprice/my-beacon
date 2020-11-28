@@ -5,7 +5,7 @@ import ru.cepprice.mybeacon.data.BeaconView
 
 fun Beacon.toBeaconView(): BeaconView = with(this) {
     BeaconView(
-        uuid = id1.toString(),
+        uuid = id1.toString().toUpperCase(),
         major = id2.toString(),
         minor = id3.toString(),
         rssi = "$rssi dBm",
