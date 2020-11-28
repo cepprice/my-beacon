@@ -59,10 +59,10 @@ dependencies {
 
     // AltBeacon
     implementation "org.altbeacon:android-beacon-library:$altbeacon_version"
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-
 
 }
