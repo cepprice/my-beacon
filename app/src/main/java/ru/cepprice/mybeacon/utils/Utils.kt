@@ -43,34 +43,6 @@ object Utils {
         return srcBeacons
     }
 
-    fun quickSortBeacons(arr: ArrayList<Beacon>, left: Int = 0, right: Int = arr.size - 1)
-    : ArrayList<Beacon> {
-        if (arr.isEmpty()) return ArrayList()
-
-        var res = arr
-
-        var l = left
-        var r = right
-        val pivot = res[(left + right) / 2]
-
-        while (l <= r) {
-            while (res[l].distance < pivot.distance) l++
-            while (res[r].distance > pivot.distance) r--
-
-            if (l <= r) {
-                res[l] = res[r].also { res[r] = res[l] }
-                l++
-                r--
-            }
-        }
-
-        val index = l
-        if (left < index - 1) res = quickSortBeacons(res, left, index - 1)
-        if (index < right) res = quickSortBeacons(res, index, right)
-
-        return res
-    }
-
     private fun randomHexDigit(): String {
         val chars = "1234567890ABCDEF"
         return chars[(0..15).random()].toString()

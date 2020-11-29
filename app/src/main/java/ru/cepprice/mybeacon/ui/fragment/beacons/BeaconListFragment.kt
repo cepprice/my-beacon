@@ -16,6 +16,7 @@ import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
 import ru.cepprice.mybeacon.utils.TimedBeaconSimulator
 import ru.cepprice.mybeacon.utils.Utils
 import ru.cepprice.mybeacon.utils.autoCleared
+import ru.cepprice.mybeacon.utils.extension.quickSort
 import ru.cepprice.mybeacon.utils.extension.toBeaconView
 
 class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
@@ -102,7 +103,7 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
         // In case there 2 or more beacons detected simultaneously
         // after start of scanning
         if (isFirstCall) {
-            beaconsForAdapter = Utils.quickSortBeacons(beaconsForAdapter)
+            beaconsForAdapter = ArrayList(beaconsForAdapter.quickSort())
             isFirstCall = false
         }
 
