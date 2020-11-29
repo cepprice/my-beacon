@@ -34,6 +34,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showTabLayout()
+        handlePermission()
         initializeBluetoothAdapter()
     }
 
