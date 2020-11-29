@@ -6,6 +6,7 @@
     <string name="main_not_functional">App is not functional</string>
     <string name="main_label_ble">BLE Devices</string>
     <string name="main_label_beacons">Beacons</string>
+    <string name="message_main_turn_on_bluetooth">Please turn Bluetooth on. Devices and beacons cannot be  detected</string>
 
 
 </resources>
