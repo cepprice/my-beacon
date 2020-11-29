@@ -13,8 +13,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.cepprice.mybeacon.databinding.FragmentDeviceListBinding
-import ru.cepprice.mybeacon.utils.extension.mapToDeviceView
 import ru.cepprice.mybeacon.utils.autoCleared
+import ru.cepprice.mybeacon.utils.extension.mapToDeviceView
 
 class DeviceListFragment : Fragment() {
 
@@ -32,7 +32,6 @@ class DeviceListFragment : Fragment() {
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            Log.d("M_DeviceListFragment", "Found device: ${result.device.address} ${result.device.name}")
             deviceListAdapter.addDevice(result.mapToDeviceView())
         }
     }
