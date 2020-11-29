@@ -3,7 +3,6 @@ package ru.cepprice.mybeacon.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import ru.cepprice.mybeacon.databinding.ActivityMainBinding
 
 
@@ -14,6 +13,7 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setSupportActionBar(binding.toolbar)
         setContentView(binding.root)
     }
 

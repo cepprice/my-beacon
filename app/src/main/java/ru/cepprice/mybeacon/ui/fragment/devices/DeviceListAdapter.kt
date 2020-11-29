@@ -17,6 +17,11 @@ class DeviceListAdapter : RecyclerView.Adapter<DeviceListAdapter.DeviceViewHolde
         }
     }
 
+    fun clear() {
+        devices.clear()
+        notifyDataSetChanged()
+    }
+
     class DeviceViewHolder(val binding: ListItemDeviceBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
