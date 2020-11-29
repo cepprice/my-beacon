@@ -15,7 +15,6 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
