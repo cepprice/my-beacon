@@ -21,8 +21,7 @@ class TimedBeaconSimulator(beaconCount: Int? = null, maxPeriod: Int = 3) : Beaco
 
         scheduledTaskExecutor = Executors.newScheduledThreadPool(mBeaconCount)
         scheduledTaskExecutor.scheduleAtFixedRate({
-            if (counter++ < mBeaconCount) beacons.add(getRandomBeacon()
-                .also { Log.d("M_TimedBeaconSimulator", "Randomly created beacon with dist: ${it.distance}") })
+            if (counter++ < mBeaconCount) beacons.add(getRandomBeacon())
             else scheduledTaskExecutor.shutdown()
         }, 0, (2..maxPeriod).random().toLong(), TimeUnit.SECONDS)
     }
