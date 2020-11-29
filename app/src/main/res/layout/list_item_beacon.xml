@@ -13,10 +13,11 @@
         android:id="@+id/card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="10dp"
+        app:cardElevation="8dp"
         android:layout_marginLeft="@dimen/spacing_normal_16"
+        android:layout_marginTop="@dimen/spacing_tiny_4"
         android:layout_marginRight="@dimen/spacing_normal_16"
-        android:layout_marginBottom="@dimen/spacing_small_8">
+        android:layout_marginBottom="@dimen/spacing_tiny_4">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
