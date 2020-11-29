@@ -16,7 +16,6 @@ import org.altbeacon.beacon.*
 import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
 import ru.cepprice.mybeacon.ui.fragment.main.MainFragmentDirections
 import ru.cepprice.mybeacon.utils.TimedBeaconSimulator
-import ru.cepprice.mybeacon.utils.Utils
 import ru.cepprice.mybeacon.utils.autoCleared
 import ru.cepprice.mybeacon.utils.extension.quickSort
 import ru.cepprice.mybeacon.utils.extension.toBeaconView
