@@ -32,11 +32,6 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
     private lateinit var beaconManager: BeaconManager
 
-    private var prevBeacons: MutableCollection<Beacon> = mutableListOf()
-    private var beaconsForAdapter = ArrayList<Beacon>()
-
-    private var isFirstCall = true
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -97,36 +92,8 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>?, region: Region?) {
         if (beacons == null) return
-        Log.d("M_BeaconListFragment",
-            "Beacons: ${beacons.map { beacons.indexOf(it).toString().plus(": ${it.distance}") }}")
 
-        // In case there 2 or more beacons detected simultaneously
-        // after start of scanning
-        if (isFirstCall) {
-            beaconsForAdapter = ArrayList(beaconsForAdapter.quickSort())
-            isFirstCall = false
-        }
-
-        // If some previously detected beacons disappeared, identify them and remove
-        // from list of beacons
-        val lostBeacons = Utils.getLostBeacons(prevBeacons, beacons)
-        if (lostBeacons.isNotEmpty()) {
-            beaconsForAdapter.removeAll(lostBeacons)
-        }
-
-        // If new beacons were detected after first scan, get them and add
-        // to existing list of beacons with saving order by distance
-        val newBeacons = Utils.getNewBeacons(prevBeacons, beacons)
-        if (newBeacons.isNotEmpty()) {
-            beaconsForAdapter = Utils.addBeaconSavingOrder(beaconsForAdapter, newBeacons)
-        }
-
-        adapter.updateBeacons(beaconsForAdapter.map { it.toBeaconView() })
-
-        // Add all beacons, found in last call, to compare them with beacons,
-        // that will be found next call
-        prevBeacons.clear()
-        prevBeacons.addAll(beacons)
+        adapter.updateBeacons(beacons.toList().quickSort().map { it.toBeaconView() })
     }
 
     override fun getApplicationContext(): Context = requireContext()
