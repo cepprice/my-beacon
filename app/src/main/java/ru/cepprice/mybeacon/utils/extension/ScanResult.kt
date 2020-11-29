@@ -1,7 +1,7 @@
 package ru.cepprice.mybeacon.utils.extension
 
 import android.bluetooth.le.ScanResult
-import ru.cepprice.mybeacon.data.DeviceView
+import ru.cepprice.mybeacon.data.local.DeviceView
 
 fun ScanResult.mapToDeviceView(): DeviceView {
     val name = this.device.name.let {

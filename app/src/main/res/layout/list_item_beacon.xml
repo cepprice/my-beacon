@@ -6,7 +6,7 @@
     <data>
         <variable
             name="beacon"
-            type="ru.cepprice.mybeacon.data.BeaconView" />
+            type="ru.cepprice.mybeacon.data.local.BeaconView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

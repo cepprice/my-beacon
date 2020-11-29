@@ -1,4 +1,4 @@
-package ru.cepprice.mybeacon.data
+package ru.cepprice.mybeacon.data.local
 
 data class BeaconView(
     val uuid: String,

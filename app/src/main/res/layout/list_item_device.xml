@@ -6,7 +6,7 @@
     <data>
         <variable
             name="device"
-            type="ru.cepprice.mybeacon.data.DeviceView" />
+            type="ru.cepprice.mybeacon.data.local.DeviceView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

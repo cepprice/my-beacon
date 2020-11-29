@@ -3,7 +3,7 @@ package ru.cepprice.mybeacon.ui.fragment.devices
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.cepprice.mybeacon.data.DeviceView
+import ru.cepprice.mybeacon.data.local.DeviceView
 import ru.cepprice.mybeacon.databinding.ListItemDeviceBinding
 
 class DeviceListAdapter : RecyclerView.Adapter<DeviceListAdapter.DeviceViewHolder>() {

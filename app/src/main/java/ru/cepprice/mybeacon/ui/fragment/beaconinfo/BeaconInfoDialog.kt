@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import ru.cepprice.mybeacon.data.BeaconView
+import ru.cepprice.mybeacon.data.local.BeaconView
 import ru.cepprice.mybeacon.databinding.DialogBeaconInfoBinding
 import ru.cepprice.mybeacon.utils.autoCleared
 

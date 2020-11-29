@@ -3,7 +3,7 @@ package ru.cepprice.mybeacon.ui.fragment.beacons
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.cepprice.mybeacon.data.BeaconView
+import ru.cepprice.mybeacon.data.local.BeaconView
 import ru.cepprice.mybeacon.databinding.ListItemBeaconBinding
 
 class BeaconListAdapter(
