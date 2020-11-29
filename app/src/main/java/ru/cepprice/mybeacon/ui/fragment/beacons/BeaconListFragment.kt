@@ -10,9 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.altbeacon.beacon.*
 import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
+import ru.cepprice.mybeacon.ui.fragment.main.MainFragmentDirections
 import ru.cepprice.mybeacon.utils.TimedBeaconSimulator
 import ru.cepprice.mybeacon.utils.Utils
 import ru.cepprice.mybeacon.utils.autoCleared
@@ -45,7 +47,11 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = BeaconListAdapter{
-            TODO()
+            val action = MainFragmentDirections.actionMainFragmentToBeaconInfoDialog(arrayOf(
+                it.uuid, it.major, it.minor, it.rssi, it.distance
+            ))
+            findNavController().navigate(action)
+
         }
 
         binding.rvBeacons.layoutManager = LinearLayoutManager(requireContext())

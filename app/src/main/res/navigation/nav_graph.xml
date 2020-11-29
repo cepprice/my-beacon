@@ -7,5 +7,17 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="ru.cepprice.mybeacon.ui.fragment.main.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_beaconInfoDialog"
+            app:destination="@id/beaconInfoDialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/beaconInfoDialog"
+        android:name="ru.cepprice.mybeacon.ui.fragment.beaconinfo.BeaconInfoDialog"
+        android:label="BeaconInfoDialog" >
+        <argument
+            android:name="stringBeacon"
+            app:argType="string[]" />
+    </dialog>
 </navigation>

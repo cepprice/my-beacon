@@ -33,7 +33,7 @@ class BeaconListAdapter(
         val currentBeacon = beacons[position]
         with(holder.binding) {
             beacon = currentBeacon
-            cardContainer.setOnClickListener { lister(currentBeacon) }
+            holder.itemView.setOnClickListener{lister(holder.binding.beacon!!)}
             executePendingBindings()
         }
     }
