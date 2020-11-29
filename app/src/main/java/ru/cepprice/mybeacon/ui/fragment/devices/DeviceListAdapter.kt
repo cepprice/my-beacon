@@ -11,7 +11,7 @@ class DeviceListAdapter : RecyclerView.Adapter<DeviceListAdapter.DeviceViewHolde
     private val devices = ArrayList<DeviceView>()
 
     fun addDevice(device: DeviceView) {
-        if (!devices.contains(device)) {
+        if (!devices.map { it.mac }.contains(device.mac)) {
             devices.add(device)
             notifyDataSetChanged()
         }
