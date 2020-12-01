@@ -6,8 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import ru.cepprice.mybeacon.R
 import ru.cepprice.mybeacon.databinding.FragmentMainBinding
 import ru.cepprice.mybeacon.ui.fragment.beacons.BeaconListFragment
@@ -18,6 +27,9 @@ import ru.cepprice.mybeacon.utils.extension.hasGpsPermission
 class MainFragment : Fragment() {
 
     private var binding: FragmentMainBinding by autoCleared()
+
+    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var KEY_IS_FIRST: Preferences.Key<Boolean>
 
     private var snackbar: Snackbar? = null
 
@@ -32,7 +44,18 @@ class MainFragment : Fragment() {
         if (hasGpsPermission()) {
             snackbar?.dismiss()
         }
-        else requestGpsPermission()
+        else {
+            dataStore = requireContext().createDataStore(name = "launch")
+            KEY_IS_FIRST = preferencesKey<Boolean>("is_first_launch")
+
+            lifecycleScope.launch {
+                val isFirstLaunch = readDataStore()
+                if (isFirstLaunch) {
+                    writeDataStore()
+                    showAlertGpsRequired()
+                } else requestGpsPermission()
+            }
+        }
 
         showTabLayout()
 
@@ -51,6 +74,25 @@ class MainFragment : Fragment() {
             showTabLayout()
         }
         else showErrorGpsPermissionNeeded()
+    }
+
+    private suspend fun readDataStore(): Boolean {
+        val preference = dataStore.data.first()
+        return preference[KEY_IS_FIRST] ?: true
+    }
+
+    private suspend fun writeDataStore() {
+        dataStore.edit { isFirst -> isFirst[KEY_IS_FIRST] = false }
+    }
+
+    private fun showAlertGpsRequired() {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.main_alert_title_gps_required))
+                .setMessage(resources.getString(R.string.main_alert_message_gps_required))
+                .setPositiveButton(resources.getString(R.string.btn_ok)) { _, _ ->
+                    requestGpsPermission()
+                }
+                .show()
     }
 
     private fun hasGpsPermission(): Boolean = requireContext().hasGpsPermission()
@@ -72,7 +114,7 @@ class MainFragment : Fragment() {
     private fun showErrorGpsPermissionNeeded() {
         snackbar = Snackbar.make(
             binding.viewPager,
-            getString(R.string.main_alert_gps_required),
+            getString(R.string.main_snackbar_gps_required),
             Snackbar.LENGTH_INDEFINITE)
         snackbar?.show()
     }
