@@ -4,7 +4,9 @@ import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.cepprice.mybeacon.R
 import ru.cepprice.mybeacon.databinding.FragmentDeviceListBinding
@@ -19,7 +21,8 @@ class DeviceListFragment : ScanningFragment() {
     private lateinit var leScanCallback: ScanCallback
     private var bluetoothLeScanner: BluetoothLeScanner? = null
 
-    lateinit var deviceListAdapter: DeviceListAdapter
+    private lateinit var deviceListAdapter: DeviceListAdapter
+    private var menu: Menu? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,8 +42,12 @@ class DeviceListFragment : ScanningFragment() {
         setupScanCallback()
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_device_list, menu)
+        this.menu = menu
+        if (isBluetoothEnabled()) updateBluetoothIcon(true)
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -48,6 +55,7 @@ class DeviceListFragment : ScanningFragment() {
 
         when (item.itemId) {
             R.id.action_clear -> deviceListAdapter.clear()
+            R.id.action_toggle_bluetooth -> toggleBluetooth()
         }
 
         return super.onOptionsItemSelected(item)
@@ -61,7 +69,22 @@ class DeviceListFragment : ScanningFragment() {
 
     override fun onBluetoothEnabled() {
         if (bluetoothLeScanner == null) bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
+        updateBluetoothIcon(true)
         super.onBluetoothEnabled()
+    }
+
+    override fun onBluetoothDisabled() {
+        updateBluetoothIcon(false)
+        super.onBluetoothDisabled()
+    }
+
+    private fun updateBluetoothIcon(enabled: Boolean) {
+        val iconId =
+                if (enabled) R.drawable.ic_bluetooth_off
+                else R.drawable.ic_bluetooth_on
+        val icon = AppCompatResources.getDrawable(requireContext(), iconId)?.mutate()
+
+        menu?.findItem(R.id.action_toggle_bluetooth)?.icon = icon
     }
 
     private fun setupRecyclerView() {

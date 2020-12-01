@@ -31,6 +31,10 @@ abstract class ScanningFragment : Fragment(),
 
     protected fun isBluetoothEnabled(): Boolean = bluetoothAdapter.isEnabled
 
+    protected fun toggleBluetooth() {
+        if (isBluetoothEnabled()) bluetoothAdapter.disable()
+        else bluetoothAdapter.enable()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

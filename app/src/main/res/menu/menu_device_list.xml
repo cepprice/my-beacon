@@ -4,7 +4,12 @@
 
     <item
         android:id="@+id/action_clear"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_clear"
+        android:title="" />
+
+    <item android:id="@+id/action_toggle_bluetooth"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_bluetooth_on"
         android:title="" />
 </menu>
