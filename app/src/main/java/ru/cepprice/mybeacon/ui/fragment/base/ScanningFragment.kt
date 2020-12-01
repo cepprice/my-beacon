@@ -13,6 +13,7 @@ import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeListener
 import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeNotifier
 import ru.cepprice.mybeacon.data.receiver.GpsStateChangeNotifier
 import ru.cepprice.mybeacon.data.receiver.GpsStateChangeReceiver
+import ru.cepprice.mybeacon.utils.extension.hasGpsPermission
 import ru.cepprice.mybeacon.utils.extension.isGpsEnabled
 
 abstract class ScanningFragment : Fragment(),
@@ -28,6 +29,9 @@ abstract class ScanningFragment : Fragment(),
     protected abstract fun startScanning()
     protected abstract fun stopScanning()
 
+    protected fun isBluetoothEnabled(): Boolean = bluetoothAdapter.isEnabled
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -40,12 +44,12 @@ abstract class ScanningFragment : Fragment(),
         registerReceivers()
 
         if (!isBluetoothEnabled()) {
-            bluetoothSnackbar.show()
+            showErrorBtRequired()
             return
         }
 
         if (!isGpsEnabled()) {
-            gpsSnackbar.show()
+            showErrorGpsRequired()
             return
         }
 
@@ -62,27 +66,27 @@ abstract class ScanningFragment : Fragment(),
     override fun onBluetoothDisabled() {
         stopScanning()
         if (!gpsSnackbar.isShown) {
-            bluetoothSnackbar.show()
+            showErrorBtRequired()
         }
     }
 
     override fun onBluetoothEnabled() {
         bluetoothSnackbar.dismiss()
         if (isGpsEnabled()) startScanning()
-        else gpsSnackbar.show()
+        else showErrorGpsRequired()
     }
 
     override fun onGpsDisabled() {
         stopScanning()
         if (!bluetoothSnackbar.isShown) {
-            gpsSnackbar.show()
+            showErrorGpsRequired()
         }
     }
 
     override fun onGpsEnabled() {
         gpsSnackbar.dismiss()
         if (isBluetoothEnabled()) startScanning()
-        else bluetoothSnackbar.show()
+        else showErrorBtRequired()
     }
 
     private fun registerReceivers() {
@@ -107,8 +111,14 @@ abstract class ScanningFragment : Fragment(),
         )
     }
 
-    protected fun isBluetoothEnabled(): Boolean = bluetoothAdapter.isEnabled
-
     private fun isGpsEnabled(): Boolean = requireContext().isGpsEnabled()
+
+    private fun showErrorBtRequired() {
+        if (requireContext().hasGpsPermission()) bluetoothSnackbar.show()
+    }
+
+    private fun showErrorGpsRequired() {
+        if (requireContext().hasGpsPermission()) gpsSnackbar.show()
+    }
 
 }

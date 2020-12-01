@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import ru.cepprice.mybeacon.R
@@ -14,6 +13,7 @@ import ru.cepprice.mybeacon.databinding.FragmentMainBinding
 import ru.cepprice.mybeacon.ui.fragment.beacons.BeaconListFragment
 import ru.cepprice.mybeacon.ui.fragment.devices.DeviceListFragment
 import ru.cepprice.mybeacon.utils.autoCleared
+import ru.cepprice.mybeacon.utils.extension.hasGpsPermission
 
 class MainFragment : Fragment() {
 
@@ -29,11 +29,13 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (hasLocationPermission()) {
+        if (hasGpsPermission()) {
             snackbar?.dismiss()
-            showTabLayout()
         }
-        else requestLocationPermission()
+        else requestGpsPermission()
+
+        showTabLayout()
+
     }
 
     override fun onRequestPermissionsResult(
@@ -48,14 +50,12 @@ class MainFragment : Fragment() {
         if (permission == PackageManager.PERMISSION_GRANTED) {
             showTabLayout()
         }
-        else showErrorPermissionNeeded()
+        else showErrorGpsPermissionNeeded()
     }
 
-    private fun hasLocationPermission(): Boolean =
-            (checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED)
+    private fun hasGpsPermission(): Boolean = requireContext().hasGpsPermission()
 
-    private fun requestLocationPermission() {
+    private fun requestGpsPermission() {
         val PERMISSION_REQUEST_FINE_LOCATION = 1
         requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_FINE_LOCATION)
@@ -69,10 +69,10 @@ class MainFragment : Fragment() {
         binding.tabs.setupWithViewPager(binding.viewPager)
     }
 
-    private fun showErrorPermissionNeeded() {
+    private fun showErrorGpsPermissionNeeded() {
         snackbar = Snackbar.make(
             binding.viewPager,
-            getString(R.string.message_turn_on_bluetooth),
+            getString(R.string.main_alert_gps_required),
             Snackbar.LENGTH_INDEFINITE)
         snackbar?.show()
     }
