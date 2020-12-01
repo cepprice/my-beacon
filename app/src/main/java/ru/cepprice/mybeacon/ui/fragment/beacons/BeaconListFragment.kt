@@ -29,6 +29,8 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
 
     private lateinit var beaconManager: BeaconManager
 
+    private var firstStart = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +53,11 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
     }
 
     override fun startScanning() {
+        if (firstStart) {
+            BeaconManager.setBeaconSimulator(TimedBeaconSimulator())
+            firstStart = false
+        }
+
         try {
             beaconManager.startMonitoringBeaconsInRegion(region1)
             beaconManager.startRangingBeaconsInRegion(region1)
@@ -76,7 +83,6 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
     }
 
     private fun setupBeaconManager() {
-        BeaconManager.setBeaconSimulator(TimedBeaconSimulator())
         beaconManager = BeaconManager.getInstanceForApplication(requireContext())
 
         beaconManager.beaconParsers
