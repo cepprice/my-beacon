@@ -72,7 +72,7 @@ class MainFragment : Fragment() {
     private fun showErrorPermissionNeeded() {
         snackbar = Snackbar.make(
             binding.viewPager,
-            getString(R.string.message_main_turn_on_bluetooth),
+            getString(R.string.message_turn_on_bluetooth),
             Snackbar.LENGTH_INDEFINITE)
         snackbar?.show()
     }
