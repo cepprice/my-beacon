@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">My Beacon</string>
 
-    <string name="main_alert_gps_required">This app cannot discover beacons without location access.</string>
+    <string name="main_alert_title_gps_required">This app needs location access</string>
+    <string name="main_alert_message_gps_required">Please grant location access to be able to scan for nearby Bluetooth LE devices and beacons.</string>
+    <string name="main_snackbar_gps_required">This app cannot discover beacons without location access.</string>
     <string name="main_label_ble">BLE Devices</string>
     <string name="main_label_beacons">Beacons</string>
     <string name="message_turn_on_bluetooth">Please turn Bluetooth on. Devices and beacons cannot be detected</string>
     <string name="message_turn_on_gps">Please turn GPS on. Devices and beacons cannot be detected</string>
 
+    <string name="btn_ok">OK</string>
 
 </resources>

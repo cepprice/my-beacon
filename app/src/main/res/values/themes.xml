@@ -16,6 +16,8 @@
         <item name="android:textColor">@color/black</item>
 
         <item name="toolbarStyle">@style/ToolbarStyle</item>
+        
+        <item name="materialAlertDialogTheme">@style/Theme.MyBeacon.MaterialAlertDialog</item>
     </style>
     
     <style name="TabStyle" parent="Widget.MaterialComponents.TabLayout.Colored">
@@ -25,6 +27,20 @@
 
     <style name="ToolbarStyle" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextColor">@color/white</item>
+    </style>
+
+    <style name="Theme.MyBeacon.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.MyBeacon.MaterialDialogAlert.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.MyBeacon.MaterialDialogAlert.Body</item>
+    </style>
+
+    <style name="Theme.MyBeacon.MaterialDialogAlert.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Theme.MyBeacon.MaterialDialogAlert.Body" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/dark_grey</item>
     </style>
 
     <style name="TextViewLabel" parent="Widget.MaterialComponents.TextView">
