@@ -10,10 +10,12 @@ fun ScanResult.mapToDeviceView(): DeviceView {
         }
 
         val manufacturerData = this.scanRecord?.manufacturerSpecificData
-        val bytes = manufacturerData?.get(6) ?: return@let "None"
+        val bytes = manufacturerData?.get(6) ?: return@let "[none]"
         val reg = Regex("[a-zA-z0-9-]+")
         val lastInvalid = bytes.indexOfLast { byte ->  !reg.containsMatchIn(byte.toChar().toString()) }
-        return@let bytes.decodeToString(lastInvalid + 1)
+        return@let bytes.decodeToString(lastInvalid + 1).let { decodedName ->
+            if (decodedName.isEmpty()) "[none]" else decodedName
+        }
     }
 
     return DeviceView(name, this.device.address, "${this.rssi} dBm")

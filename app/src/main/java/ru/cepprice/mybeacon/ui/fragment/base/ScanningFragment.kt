@@ -107,12 +107,16 @@ abstract class ScanningFragment : Fragment(),
         bluetoothSnackbar = Snackbar.make(
             requireView(), getString(R.string.message_turn_on_bluetooth),
             Snackbar.LENGTH_INDEFINITE
-        )
+        ).setAction("OK") {
+                bluetoothSnackbar.dismiss()
+            }
 
         gpsSnackbar = Snackbar.make(
             requireView(), getString(R.string.message_turn_on_gps),
             Snackbar.LENGTH_INDEFINITE
-        )
+        ).setAction("OK") {
+            gpsSnackbar.dismiss()
+        }
     }
 
     private fun isGpsEnabled(): Boolean = requireContext().isGpsEnabled()
