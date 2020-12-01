@@ -3,12 +3,12 @@ package ru.cepprice.mybeacon.ui.fragment.beacons
 import android.content.*
 import android.os.Bundle
 import android.os.RemoteException
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.altbeacon.beacon.*
+import ru.cepprice.mybeacon.R
 import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
 import ru.cepprice.mybeacon.ui.fragment.base.ScanningFragment
 import ru.cepprice.mybeacon.ui.fragment.main.MainFragmentDirections
@@ -26,6 +26,7 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
     private var binding: FragmentBeaconListBinding by autoCleared()
 
     private lateinit var beaconListAdapter: BeaconListAdapter
+    private var menu: Menu? = null
 
     private lateinit var beaconManager: BeaconManager
 
@@ -36,6 +37,7 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         binding = FragmentBeaconListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -50,6 +52,41 @@ class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
     override fun onStop() {
         super.onStop()
         beaconManager.unbind(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_beacon_list, menu)
+        this.menu = menu
+        if (isBluetoothEnabled()) updateBluetoothIcon(true)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId) {
+            R.id.action_toggle_bluetooth -> toggleBluetooth()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateBluetoothIcon(enabled: Boolean) {
+        val iconId =
+                if (enabled) R.drawable.ic_bluetooth_off
+                else R.drawable.ic_bluetooth_on
+        val icon = AppCompatResources.getDrawable(requireContext(), iconId)?.mutate()
+
+        menu?.findItem(R.id.action_toggle_bluetooth)?.icon = icon
+    }
+
+    override fun onBluetoothEnabled() {
+        super.onBluetoothEnabled()
+        updateBluetoothIcon(true)
+    }
+
+    override fun onBluetoothDisabled() {
+        super.onBluetoothDisabled()
+        updateBluetoothIcon(false)
     }
 
     override fun startScanning() {
