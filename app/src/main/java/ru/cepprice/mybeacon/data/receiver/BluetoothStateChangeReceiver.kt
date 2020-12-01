@@ -18,7 +18,7 @@ class BluetoothStateChangeListener(
             when (state) {
                 BluetoothAdapter.STATE_OFF, BluetoothAdapter.STATE_TURNING_OFF ->
                     stateChangeNotifier.onBluetoothDisabled()
-                BluetoothAdapter.STATE_ON, BluetoothAdapter.STATE_TURNING_ON ->
+                BluetoothAdapter.STATE_ON ->
                     stateChangeNotifier.onBluetoothEnabled()
             }
         }

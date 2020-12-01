@@ -1,7 +1,5 @@
 package ru.cepprice.mybeacon.utils
 
-import org.altbeacon.beacon.Beacon
-
 object Utils {
 
     fun generateRandomUuid(): String =

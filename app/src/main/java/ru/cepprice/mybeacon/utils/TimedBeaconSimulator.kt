@@ -1,6 +1,5 @@
 package ru.cepprice.mybeacon.utils
 
-import android.util.Log
 import org.altbeacon.beacon.AltBeacon
 import org.altbeacon.beacon.Beacon
 import org.altbeacon.beacon.simulator.BeaconSimulator

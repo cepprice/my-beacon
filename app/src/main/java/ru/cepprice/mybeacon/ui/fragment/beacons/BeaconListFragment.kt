@@ -1,29 +1,23 @@
 package ru.cepprice.mybeacon.ui.fragment.beacons
 
-import android.bluetooth.BluetoothAdapter
 import android.content.*
 import android.os.Bundle
 import android.os.RemoteException
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import org.altbeacon.beacon.*
-import ru.cepprice.mybeacon.R
-import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeListener
-import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeNotifier
 import ru.cepprice.mybeacon.databinding.FragmentBeaconListBinding
+import ru.cepprice.mybeacon.ui.fragment.base.ScanningFragment
 import ru.cepprice.mybeacon.ui.fragment.main.MainFragmentDirections
 import ru.cepprice.mybeacon.utils.TimedBeaconSimulator
 import ru.cepprice.mybeacon.utils.autoCleared
 import ru.cepprice.mybeacon.utils.extension.quickSort
 import ru.cepprice.mybeacon.utils.extension.toBeaconView
 
-class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier, BluetoothStateChangeNotifier {
+class BeaconListFragment : ScanningFragment(), BeaconConsumer, RangeNotifier {
 
     companion object {
         val region1 = Region("Region1", null, null, null)
@@ -32,12 +26,8 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier, BluetoothS
     private var binding: FragmentBeaconListBinding by autoCleared()
 
     private lateinit var beaconListAdapter: BeaconListAdapter
-    private var snackbar: Snackbar? = null
-
-    private lateinit var bluetoothAdapter: BluetoothAdapter
 
     private lateinit var beaconManager: BeaconManager
-    private lateinit var receiver: BroadcastReceiver
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,42 +41,25 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier, BluetoothS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        registerReceiver()
         setupRecyclerView()
         setupBeaconManager()
-
-        if (bluetoothAdapter.isEnabled) {
-            startScanningForBeacons()
-        } else {
-            onBluetoothDisabled()
-        }
     }
 
     override fun onStop() {
         super.onStop()
-        stopScanningForBeacons()
-        requireActivity().unregisterReceiver(receiver)
         beaconManager.unbind(this)
     }
 
-    override fun onBluetoothDisabled() {
-        stopScanningForBeacons()
-
-        if (snackbar == null) {
-            snackbar = Snackbar.make(
-                binding.rvBeacons,
-                getString(R.string.message_main_turn_on_bluetooth),
-                Snackbar.LENGTH_INDEFINITE)
-        }
-
-        if (!snackbar!!.isShown) snackbar!!.show()
+    override fun startScanning() {
+        try {
+            beaconManager.startMonitoringBeaconsInRegion(region1)
+            beaconManager.startRangingBeaconsInRegion(region1)
+        } catch (e: RemoteException) {}
     }
 
-    override fun onBluetoothEnabled() {
-        snackbar?.dismiss()
-        startScanningForBeacons()
+    override fun stopScanning() {
+        beaconManager.stopMonitoringBeaconsInRegion(region1)
+        beaconManager.stopRangingBeaconsInRegion(region1)
     }
 
     private fun setupRecyclerView() {
@@ -120,40 +93,18 @@ class BeaconListFragment : Fragment(), BeaconConsumer, RangeNotifier, BluetoothS
         beaconManager.bind(this)
     }
 
-    private fun registerReceiver() {
-        receiver = BluetoothStateChangeListener(this)
-        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
-        requireActivity().registerReceiver(receiver, filter)
-    }
-
-    private fun startScanningForBeacons() {
-        try {
-            beaconManager.startMonitoringBeaconsInRegion(region1)
-            beaconManager.startRangingBeaconsInRegion(region1)
-        } catch (e: RemoteException) {}
-    }
-
-    private fun stopScanningForBeacons() {
-        beaconManager.stopMonitoringBeaconsInRegion(region1)
-        beaconManager.stopRangingBeaconsInRegion(region1)
-    }
-
     override fun onBeaconServiceConnect() {
         beaconManager.addMonitorNotifier(object : MonitorNotifier {
 
             override fun didEnterRegion(p0: Region?) {
-                Log.d("M_BeaconListFragment", "Entered: ${p0?.uniqueId}")
                 beaconManager.removeRangeNotifier(this@BeaconListFragment)
                 beaconManager.addRangeNotifier(this@BeaconListFragment)
-                p0.let { beaconManager.startRangingBeaconsInRegion(region1) }
             }
 
             override fun didExitRegion(p0: Region?) {
-                Log.d("M_BeaconListFragment", "Exited: ${p0?.id1}")
             }
 
             override fun didDetermineStateForRegion(p0: Int, p1: Region?) {
-                Log.d("M_BeaconListFragment", "Determined: ${p1?.uniqueId}")
                 beaconManager.removeRangeNotifier(this@BeaconListFragment)
                 beaconManager.addRangeNotifier(this@BeaconListFragment)
             }
