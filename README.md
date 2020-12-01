@@ -1,2 +1,6 @@
-![alt-text](demo1.gif)
-![alt-text](demo2.gif)
+![](demo1.gif)
+![](demo2.gif) 
+<br />
+![](img1.jpg)
+![](img2.jpg)
+![](img3.jpg)
