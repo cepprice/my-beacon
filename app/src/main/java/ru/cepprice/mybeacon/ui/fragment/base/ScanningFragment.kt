@@ -1,109 +1,121 @@
 package ru.cepprice.mybeacon.ui.fragment.base
 
-import android.bluetooth.BluetoothAdapter
-import android.content.BroadcastReceiver
-import android.content.IntentFilter
-import android.location.LocationManager
+import android.bluetooth.le.BluetoothLeScanner
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import ru.cepprice.mybeacon.R
-import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeListener
-import ru.cepprice.mybeacon.data.receiver.BluetoothStateChangeNotifier
-import ru.cepprice.mybeacon.data.receiver.GpsStateChangeNotifier
-import ru.cepprice.mybeacon.data.receiver.GpsStateChangeReceiver
+import ru.cepprice.mybeacon.utils.BluetoothManager
+import ru.cepprice.mybeacon.utils.GpsManager
+import ru.cepprice.mybeacon.utils.extension.component
 import ru.cepprice.mybeacon.utils.extension.hasGpsPermission
-import ru.cepprice.mybeacon.utils.extension.isGpsEnabled
+import javax.inject.Inject
 
-abstract class ScanningFragment : Fragment(),
-    BluetoothStateChangeNotifier, GpsStateChangeNotifier  {
+abstract class ScanningFragment : Fragment()  {
 
-    private lateinit var bluetoothReceiver: BroadcastReceiver
-    private lateinit var gpsReceiver: BroadcastReceiver
+    @Inject lateinit var bluetoothManager: BluetoothManager
+    @Inject lateinit var gpsManager: GpsManager
+
+    protected var bluetoothLeScanner: BluetoothLeScanner? = null
+
     private lateinit var bluetoothSnackbar: Snackbar
     private lateinit var gpsSnackbar: Snackbar
 
-    protected lateinit var bluetoothAdapter: BluetoothAdapter
+    private var gpsStateDisposable: Disposable? = null
+    private var bluetoothStateDisposable: Disposable? = null
+
+    private var menu: Menu? = null
+
 
     protected abstract fun startScanning()
     protected abstract fun stopScanning()
 
-    protected fun isBluetoothEnabled(): Boolean = bluetoothAdapter.isEnabled
-
-    protected fun toggleBluetooth() {
-        if (isBluetoothEnabled()) bluetoothAdapter.disable()
-        else bluetoothAdapter.enable()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        initSnackbars()
+        component().inject(this)
+        initializeSnackbars()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        registerReceivers()
-
-        if (!isBluetoothEnabled()) {
-            showErrorBtRequired()
-            return
-        }
-
-        if (!isGpsEnabled()) {
-            showErrorGpsRequired()
-            return
-        }
-
-        startScanning()
+    override fun onResume() {
+        super.onResume()
+        observeBluetoothState()
+        observeGpsState()
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(bluetoothReceiver)
-        requireActivity().unregisterReceiver(gpsReceiver)
+        bluetoothManager.unregisterReceiver()
+        gpsManager.unregisterReceiver()
         stopScanning()
     }
 
-    override fun onBluetoothDisabled() {
-        stopScanning()
-        if (!gpsSnackbar.isShown) {
-            showErrorBtRequired()
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
     }
 
-    override fun onBluetoothEnabled() {
-        bluetoothSnackbar.dismiss()
-        if (isGpsEnabled()) startScanning()
-        else showErrorGpsRequired()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_toggle_bluetooth) bluetoothManager.toggle()
+
+        return super.onOptionsItemSelected(item)
     }
 
-    override fun onGpsDisabled() {
-        stopScanning()
-        if (!bluetoothSnackbar.isShown) {
-            showErrorGpsRequired()
-        }
+    private fun observeGpsState() {
+        gpsStateDisposable?.dispose()
+        gpsStateDisposable = gpsManager.asFlowable()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe { isEnabled ->
+                if (isEnabled) {
+                    gpsSnackbar.dismiss()
+                    if (bluetoothManager.isEnabled()) startScanning()
+                    else showErrorBtRequired()
+                } else {
+                    stopScanning()
+                    if (!bluetoothSnackbar.isShown) showErrorGpsRequired()
+                }
+            }
     }
 
-    override fun onGpsEnabled() {
-        gpsSnackbar.dismiss()
-        if (isBluetoothEnabled()) startScanning()
-        else showErrorBtRequired()
+    private fun observeBluetoothState() {
+        bluetoothStateDisposable = bluetoothManager.asFlowable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { isEnabled ->
+
+                updateBluetoothIcon(bluetoothManager.isEnabled())
+
+                if (isEnabled) {
+                    bluetoothSnackbar.dismiss()
+
+                    if (bluetoothLeScanner == null) {
+                        bluetoothLeScanner = component().provideBluetoothLeScanner()
+                    }
+
+                    if (gpsManager.isEnabled()) startScanning()
+                    else showErrorGpsRequired()
+                } else {
+                    stopScanning()
+                    if (!gpsSnackbar.isShown) showErrorBtRequired()
+                }
+            }
     }
 
-    private fun registerReceivers() {
-        bluetoothReceiver = BluetoothStateChangeListener(this)
-        val bluetoothFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
-        requireActivity().registerReceiver(bluetoothReceiver, bluetoothFilter)
+    private fun updateBluetoothIcon(enabled: Boolean) {
+        val iconId =
+            if (enabled) R.drawable.ic_bluetooth_off
+            else R.drawable.ic_bluetooth_on
+        val icon = AppCompatResources.getDrawable(requireContext(), iconId)?.mutate()
 
-        gpsReceiver = GpsStateChangeReceiver(this)
-        val gpsFilter = IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
-        requireActivity().registerReceiver(gpsReceiver, gpsFilter)
+        menu?.findItem(R.id.action_toggle_bluetooth)?.icon = icon
     }
 
-    private fun initSnackbars() {
+    private fun initializeSnackbars() {
         bluetoothSnackbar = Snackbar.make(
             requireView(), getString(R.string.message_turn_on_bluetooth),
             Snackbar.LENGTH_INDEFINITE
@@ -118,8 +130,6 @@ abstract class ScanningFragment : Fragment(),
             gpsSnackbar.dismiss()
         }
     }
-
-    private fun isGpsEnabled(): Boolean = requireContext().isGpsEnabled()
 
     private fun showErrorBtRequired() {
         if (requireContext().hasGpsPermission()) bluetoothSnackbar.show()
