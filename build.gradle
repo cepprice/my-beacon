@@ -6,6 +6,7 @@ buildscript {
         altbeacon_version = "2.17.1"
         lifecycle_version = "2.2.0"
         fragment_version = "1.2.5"
+        dagger2_version = "2.28.1"
     }
     repositories {
         google()
